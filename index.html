@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitCactus – Desarrollo de Software</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #00A896;
+    --yellow: #D4E629;
+    --dark: #1a1f24;
+    --darker: #12161a;
+    --card-bg: #1e2530;
+    --text: #e8edf2;
+    --muted: #8a9bb0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(18,22,26,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,168,150,0.2);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: .75rem;
+    font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; font-weight: 700;
+    color: var(--teal); letter-spacing: 3px; text-decoration: none;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: var(--teal); border-radius: 50%;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .logo-icon svg { width: 22px; height: 22px; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: .9rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: color .25s;
+  }
+  .nav-links a:hover { color: var(--yellow); }
+  .nav-cta {
+    background: var(--teal); color: var(--darker);
+    padding: .55rem 1.4rem; border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    letter-spacing: 1px; text-decoration: none; font-size: .95rem;
+    transition: background .25s, transform .2s;
+  }
+  .nav-cta:hover { background: var(--yellow); transform: translateY(-2px); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,168,150,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,168,150,.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove { from { transform: translateY(0); } to { transform: translateY(50px); } }
+  .hero-glow {
+    position: absolute; width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,168,150,.18) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    border: 1px solid var(--teal); color: var(--teal);
+    padding: .3rem 1rem; border-radius: 2px;
+    font-size: .75rem; letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeUp .6s ease both;
+  }
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 700; letter-spacing: 6px; line-height: 1;
+    color: #fff;
+    animation: fadeUp .7s .1s ease both;
+  }
+  .hero-title span { color: var(--teal); }
+  .hero-subtitle {
+    font-size: clamp(.95rem, 2vw, 1.2rem);
+    color: var(--muted); max-width: 560px;
+    line-height: 1.7; margin: 1.5rem auto 2.5rem;
+    animation: fadeUp .7s .2s ease both;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .btn-primary {
+    background: var(--teal); color: var(--darker);
+    padding: .85rem 2.2rem; border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    letter-spacing: 2px; font-size: 1rem; text-decoration: none;
+    transition: background .25s, transform .2s, box-shadow .25s;
+    box-shadow: 0 0 20px rgba(0,168,150,.3);
+  }
+  .btn-primary:hover { background: var(--yellow); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(212,230,41,.3); }
+  .btn-outline {
+    border: 1.5px solid var(--teal); color: var(--teal);
+    padding: .85rem 2.2rem; border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    letter-spacing: 2px; font-size: 1rem; text-decoration: none;
+    transition: background .25s, color .25s, transform .2s;
+  }
+  .btn-outline:hover { background: var(--teal); color: var(--darker); transform: translateY(-3px); }
+
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    color: var(--muted); font-size: .75rem; letter-spacing: 2px;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint::after {
+    content: ''; display: block; width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--teal), transparent);
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── STATS ── */
+  #stats {
+    background: var(--dark);
+    border-top: 1px solid rgba(0,168,150,.15);
+    border-bottom: 1px solid rgba(0,168,150,.15);
+    padding: 3rem 2rem;
+  }
+  .stats-grid {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 2rem; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif; font-size: 3rem; font-weight: 700;
+    color: var(--teal); line-height: 1;
+  }
+  .stat-num span { color: var(--yellow); }
+  .stat-label { color: var(--muted); font-size: .85rem; letter-spacing: 1px; margin-top: .4rem; text-transform: uppercase; }
+
+  /* ── SERVICES ── */
+  #services { padding: 7rem 2rem; }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-tag {
+    display: inline-block; color: var(--teal);
+    font-size: .75rem; letter-spacing: 3px; text-transform: uppercase;
+    border-bottom: 1px solid var(--teal); padding-bottom: .2rem; margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700; color: #fff; letter-spacing: 2px;
+  }
+  .section-title span { color: var(--teal); }
+  .services-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    gap: 1.5rem;
+  }
+  .service-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0,168,150,.15);
+    border-radius: 8px; padding: 2.2rem;
+    position: relative; overflow: hidden;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+  }
+  .service-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--yellow));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s ease;
+  }
+  .service-card:hover { transform: translateY(-6px); border-color: rgba(0,168,150,.45); box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-icon {
+    width: 52px; height: 52px; border-radius: 10px;
+    background: rgba(0,168,150,.12);
+    display: grid; place-items: center; margin-bottom: 1.4rem;
+    font-size: 1.6rem;
+  }
+  .service-name {
+    font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700;
+    color: #fff; letter-spacing: 1px; margin-bottom: .75rem;
+  }
+  .service-desc { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+  .service-list { list-style: none; margin-top: 1rem; }
+  .service-list li {
+    color: var(--muted); font-size: .85rem; padding: .3rem 0;
+    padding-left: 1rem; position: relative;
+  }
+  .service-list li::before { content: '›'; position: absolute; left: 0; color: var(--teal); }
+
+  /* ── PROCESS ── */
+  #process { padding: 6rem 2rem; background: var(--dark); }
+  .process-steps {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 0; position: relative;
+  }
+  .process-steps::before {
+    content: ''; position: absolute; top: 36px; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  }
+  .step { text-align: center; padding: 1.5rem 1rem; }
+  .step-num {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--darker); border: 2px solid var(--teal);
+    display: grid; place-items: center; margin: 0 auto 1.2rem;
+    font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700;
+    color: var(--teal); position: relative; z-index: 1;
+    transition: background .3s, color .3s;
+  }
+  .step:hover .step-num { background: var(--teal); color: var(--darker); }
+  .step-name {
+    font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700;
+    color: #fff; letter-spacing: 1px; margin-bottom: .4rem;
+  }
+  .step-desc { color: var(--muted); font-size: .82rem; line-height: 1.5; }
+
+  /* ── TECH ── */
+  #tech { padding: 6rem 2rem; }
+  .tech-grid {
+    max-width: 900px; margin: 2rem auto 0;
+    display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center;
+  }
+  .tech-badge {
+    background: var(--card-bg);
+    border: 1px solid rgba(0,168,150,.2);
+    color: var(--muted); padding: .5rem 1.2rem;
+    border-radius: 100px; font-size: .85rem; letter-spacing: .5px;
+    transition: border-color .25s, color .25s, transform .2s;
+  }
+  .tech-badge:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-3px); }
+
+  /* ── CTA ── */
+  #contact {
+    padding: 8rem 2rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,168,150,.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cta-box {
+    max-width: 640px; margin: 0 auto; position: relative;
+    background: var(--card-bg);
+    border: 1px solid rgba(0,168,150,.25);
+    border-radius: 12px; padding: 3.5rem 2.5rem;
+  }
+  .cta-box h2 {
+    font-family: 'Rajdhani', sans-serif; font-size: 2.5rem;
+    font-weight: 700; color: #fff; margin-bottom: 1rem; letter-spacing: 2px;
+  }
+  .cta-box p { color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+  .contact-info { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2rem; }
+  .contact-info a {
+    color: var(--teal); text-decoration: none; font-size: .95rem;
+    letter-spacing: .5px; transition: color .2s;
+  }
+  .contact-info a:hover { color: var(--yellow); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--darker); border-top: 1px solid rgba(0,168,150,.12);
+    padding: 2rem; text-align: center; color: var(--muted);
+    font-size: .8rem; letter-spacing: 1px;
+  }
+  footer span { color: var(--teal); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="2" width="6" height="6" fill="#D4E629"/>
+        <rect x="9" y="10" width="6" height="6" fill="#D4E629"/>
+        <rect x="3" y="6" width="6" height="6" fill="#D4E629"/>
+        <rect x="15" y="6" width="6" height="6" fill="#D4E629"/>
+        <rect x="9" y="18" width="6" height="4" fill="#D4E629"/>
+      </svg>
+    </div>
+    BITCACTUS
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Servicios</a></li>
+    <li><a href="#process">Proceso</a></li>
+    <li><a href="#tech">Tecnologías</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Contáctanos</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Desarrollo de Software · Medellín</div>
+  <h1 class="hero-title">BIT<span>CACTUS</span></h1>
+  <p class="hero-subtitle">Transformamos ideas en soluciones digitales robustas. Desarrollamos software a medida que impulsa tu negocio hacia el futuro.</p>
+  <div class="hero-btns">
+    <a href="#services" class="btn-primary">Ver Servicios</a>
+    <a href="#contact" class="btn-outline">Hablar con nosotros</a>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div>
+      <div class="stat-num">+50<span>.</span></div>
+      <div class="stat-label">Proyectos entregados</div>
+    </div>
+    <div>
+      <div class="stat-num">+30<span>.</span></div>
+      <div class="stat-label">Clientes satisfechos</div>
+    </div>
+    <div>
+      <div class="stat-num">8<span>+</span></div>
+      <div class="stat-label">Años de experiencia</div>
+    </div>
+    <div>
+      <div class="stat-num">100<span>%</span></div>
+      <div class="stat-label">Compromiso con el cliente</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <div class="section-tag">Lo que hacemos</div>
+    <h2 class="section-title">Nuestros <span>Servicios</span></h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">🖥️</div>
+      <div class="service-name">Desarrollo Web</div>
+      <p class="service-desc">Aplicaciones web modernas, rápidas y escalables adaptadas a tus necesidades de negocio.</p>
+      <ul class="service-list">
+        <li>Aplicaciones SPA y SSR</li>
+        <li>Portales corporativos</li>
+        <li>E-commerce a medida</li>
+        <li>APIs REST y GraphQL</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📱</div>
+      <div class="service-name">Apps Móviles</div>
+      <p class="service-desc">Aplicaciones nativas y multiplataforma para iOS y Android con experiencias de usuario excepcionales.</p>
+      <ul class="service-list">
+        <li>React Native / Flutter</li>
+        <li>iOS y Android nativo</li>
+        <li>Publicación en stores</li>
+        <li>Integración con servicios externos</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">☁️</div>
+      <div class="service-name">Software a Medida</div>
+      <p class="service-desc">Sistemas empresariales personalizados que automatizan procesos y optimizan la operación de tu empresa.</p>
+      <ul class="service-list">
+        <li>ERP y CRM personalizados</li>
+        <li>Automatización de procesos</li>
+        <li>Dashboards e inteligencia</li>
+        <li>Integración de sistemas</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔒</div>
+      <div class="service-name">Backend & APIs</div>
+      <p class="service-desc">Arquitecturas robustas, seguras y de alto rendimiento que sostienen cualquier producto digital.</p>
+      <ul class="service-list">
+        <li>Microservicios</li>
+        <li>Seguridad y autenticación</li>
+        <li>Bases de datos SQL/NoSQL</li>
+        <li>Infraestructura en la nube</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🤖</div>
+      <div class="service-name">Inteligencia Artificial</div>
+      <p class="service-desc">Incorporamos IA y machine learning en tus soluciones para llevar tu negocio al siguiente nivel.</p>
+      <ul class="service-list">
+        <li>Chatbots y asistentes</li>
+        <li>Análisis predictivo</li>
+        <li>Procesamiento de lenguaje</li>
+        <li>Automatización inteligente</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🚀</div>
+      <div class="service-name">Consultoría Tech</div>
+      <p class="service-desc">Te acompañamos en la definición de la arquitectura tecnológica ideal para tu proyecto o empresa.</p>
+      <ul class="service-list">
+        <li>Auditoría de código</li>
+        <li>Migración de sistemas</li>
+        <li>Arquitectura de soluciones</li>
+        <li>Mentoría para equipos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <div class="section-tag">Cómo trabajamos</div>
+    <h2 class="section-title">Nuestro <span>Proceso</span></h2>
+  </div>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-name">Descubrimiento</div>
+      <p class="step-desc">Entendemos tu negocio, objetivos y requisitos en profundidad.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-name">Diseño</div>
+      <p class="step-desc">Arquitectura y UX/UI pensadas para el usuario final.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-name">Desarrollo</div>
+      <p class="step-desc">Sprints ágiles con entregas continuas y feedback constante.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-name">QA & Pruebas</div>
+      <p class="step-desc">Testing riguroso para garantizar calidad y rendimiento.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-name">Lanzamiento</div>
+      <p class="step-desc">Despliegue, monitoreo y soporte post-lanzamiento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="section-header">
+    <div class="section-tag">Stack tecnológico</div>
+    <h2 class="section-title">Tecnologías que <span>dominamos</span></h2>
+  </div>
+  <div class="tech-grid">
+    <span class="tech-badge">React</span>
+    <span class="tech-badge">Vue.js</span>
+    <span class="tech-badge">Angular</span>
+    <span class="tech-badge">Node.js</span>
+    <span class="tech-badge">Python</span>
+    <span class="tech-badge">Django</span>
+    <span class="tech-badge">Laravel</span>
+    <span class="tech-badge">Flutter</span>
+    <span class="tech-badge">React Native</span>
+    <span class="tech-badge">PostgreSQL</span>
+    <span class="tech-badge">MongoDB</span>
+    <span class="tech-badge">Redis</span>
+    <span class="tech-badge">Docker</span>
+    <span class="tech-badge">Kubernetes</span>
+    <span class="tech-badge">AWS</span>
+    <span class="tech-badge">Google Cloud</span>
+    <span class="tech-badge">Firebase</span>
+    <span class="tech-badge">GraphQL</span>
+    <span class="tech-badge">Next.js</span>
+    <span class="tech-badge">TypeScript</span>
+  </div>
+</section>
+
+<!-- CONTACT / CTA -->
+<section id="contact">
+  <div class="cta-bg"></div>
+  <div class="cta-box">
+    <h2>¿Tienes un proyecto?</h2>
+    <p>Cuéntanos tu idea y construyamos juntos la solución digital que tu negocio necesita. Nuestro equipo está listo para ayudarte.</p>
+    <div class="contact-info">
+      <a href="mailto:jhuma@bitcactus.com">✉ jhuma@bitcactus.com</a>
+      <a href="tel:3113135042">📞 311 313 5042</a>
+      <a href="https://bitcactus.com" target="_blank">🌐 bitcactus.com</a>
+    </div>
+    <a href="mailto:jhuma@bitcactus.com" class="btn-primary" style="display:inline-block">Iniciar proyecto →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 <span>BitCactus</span> · Desarrollo de Software · Medellín, Colombia
+</footer>
+
+</body>
+</html>
